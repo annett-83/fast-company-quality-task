@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import userService from "../service/user.service";
+import userService from "../services/user.service";
 import { toast } from "react-toastify";
 
 const UserContext = React.createContext();
@@ -22,7 +22,6 @@ const UserProvider = ({ children }) => {
             setError(null);
         }
     }, [error]);
-
     async function getUsers() {
         try {
             const { content } = await userService.get();
@@ -33,12 +32,13 @@ const UserProvider = ({ children }) => {
         }
     }
     function errorCatcher(error) {
-        const { message } = error.responce.data;
+        const { message } = error.response.data;
         setError(message);
+        setLoading(false);
     }
     return (
         <UserContext.Provider value={{ users }}>
-            {!isLoading ? children : "loading..."}
+            {!isLoading ? children : "Loading..."}
         </UserContext.Provider>
     );
 };

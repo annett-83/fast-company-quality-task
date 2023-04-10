@@ -1,17 +1,17 @@
 import React, { useContext, useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import ProfessionService from "../services/profession.service";
+import QualityService from "../services/quality.service";
 import { toast } from "react-toastify";
 
-const ProfessionContext = React.createContext();
+const QualityContext = React.createContext();
 
-export const useProfessions = () => {
-    return useContext(ProfessionContext);
+export const useQualitys = () => {
+    return useContext(QualityContext);
 };
 
-export const ProfessionProvider = ({ children }) => {
+export const QualityProvider = ({ children }) => {
     const [isLoading, setLoading] = useState(true);
-    const [professions, setProfessions] = useState([]);
+    const [qualitys, setQualitys] = useState([]);
     const [error, setError] = useState(null);
     useEffect(() => {
         if (error !== null) {
@@ -21,20 +21,20 @@ export const ProfessionProvider = ({ children }) => {
     }, [error]);
 
     useEffect(() => {
-        getProfessionsList();
+        getQualitysList();
     }, []);
     function errorCatcher(error) {
         const { message } = error.response.data;
         setError(message);
     }
-    function getProfession(id) {
-        return professions.find((p) => p._id === id);
+    function getQuality(_id) {
+        return qualitys.find((q) => q._id === _id);
     }
 
-    async function getProfessionsList() {
+    async function getQualitysList() {
         try {
-            const { content } = await ProfessionService.get();
-            setProfessions(content);
+            const { content } = await QualityService.get();
+            setQualitys(content);
             setLoading(false);
         } catch (error) {
             errorCatcher(error);
@@ -42,15 +42,13 @@ export const ProfessionProvider = ({ children }) => {
     }
 
     return (
-        <ProfessionContext.Provider
-            value={{ isLoading, professions, getProfession }}
-        >
+        <QualityContext.Provider value={{ isLoading, qualitys, getQuality }}>
             {children}
-        </ProfessionContext.Provider>
+        </QualityContext.Provider>
     );
 };
 
-ProfessionProvider.propTypes = {
+QualityProvider.propTypes = {
     children: PropTypes.oneOfType([
         PropTypes.arrayOf(PropTypes.node),
         PropTypes.node
